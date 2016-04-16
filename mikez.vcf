@@ -1,0 +1,16 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:-//Apple Inc.//Mac OS X 10.11.3//EN
+N:Zhelezov;Mike;;;
+FN:Mike Zhelezov
+item1.EMAIL;type=INTERNET;type=pref:mikezhelezov@gmail.com
+item1.X-ABLabel:e-mail
+X-SOCIALPROFILE;type=twitter:http://twitter.com/mikezhelezov
+item2.URL;type=pref:fb.com/mikezhelezov
+item2.X-ABLabel:Facebook
+item3.URL:vk.com/mikezhelezov
+item3.X-ABLabel:VK
+item4.URL:@mikezhelezov
+item4.X-ABLabel:Instagram
+X-ABUID:81BDBF57-050E-46E0-8DBA-A856C5F861B1:ABPerson
+END:VCARD
