@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Корзинка доброты | Перекрёсток</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        :root {
+            --perekrestok-green: #00a650;
+            --perekrestok-dark: #006837;
+            --perekrestok-light: #7ed321;
+            --pixel-shadow: #003d1f;
+            --white: #ffffff;
+            --cream: #fff8e7;
+            --red: #ff3838;
+            --gold: #ffd700;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(135deg, var(--perekrestok-dark) 0%, var(--perekrestok-green) 50%, var(--perekrestok-light) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+            pointer-events: none;
+            animation: scanlines 8s linear infinite;
+        }
+        
+        @keyframes scanlines {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+            max-height: 800px;
+            background: var(--cream);
+            box-shadow: 
+                0 0 0 8px var(--perekrestok-dark),
+                0 0 0 12px var(--perekrestok-green),
+                0 20px 60px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        
+        .screen {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            flex-direction: column;
+            padding: 24px;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .screen.active {
+            display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .logo {
+            font-size: 12px;
+            color: var(--perekrestok-green);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        h1 {
+            font-size: 16px;
+            color: var(--perekrestok-dark);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+        
+        .rules-list {
+            background: white;
+            border: 4px solid var(--perekrestok-dark);
+            padding: 20px;
+            margin: 16px 0;
+            flex: 1;
+            box-shadow: 8px 8px 0 var(--pixel-shadow);
+        }
+        
+        .rule {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-size: 10px;
+            color: var(--perekrestok-dark);
+        }
+        
+        .rule:last-child {
+            margin-bottom: 0;
+        }
+        
+        .rule-number {
+            color: var(--perekrestok-green);
+            font-size: 14px;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .btn {
+            background: var(--perekrestok-green);
+            color: white;
+            border: 4px solid var(--perekrestok-dark);
+            padding: 16px 24px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 6px 6px 0 var(--pixel-shadow);
+            transition: all 0.1s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            background: var(--perekrestok-light);
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0 var(--pixel-shadow);
+        }
+        
+        .btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0 var(--pixel-shadow);
+        }
+        
+        .game-area {
+            flex: 1;
+            position: relative;
+            background: #87ceeb;
+            border: 4px solid var(--perekrestok-dark);
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: white;
+            border: 4px solid var(--perekrestok-dark);
+            box-shadow: 4px 4px 0 var(--pixel-shadow);
+        }
+        
+        .info-item {
+            font-size: 10px;
+            color: var(--perekrestok-dark);
+        }
+        
+        .info-value {
+            color: var(--perekrestok-green);
+            font-size: 12px;
+            display: block;
+            margin-top: 4px;
+        }
+        
+        .basket {
+            width: 80px;
+            height: 60px;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: left 0.1s linear;
+        }
+        
+        .basket-body {
+            width: 100%;
+            height: 100%;
+            background: var(--perekrestok-green);
+            border: 3px solid var(--perekrestok-dark);
+            position: relative;
+            clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+        }
+        
+        .basket-handle {
+            width: 60%;
+            height: 20px;
+            border: 3px solid var(--perekrestok-dark);
+            border-bottom: none;
+            border-radius: 50% 50% 0 0;
+            position: absolute;
+            top: -15px;
+            left: 20%;
+            background: transparent;
+        }
+        
+        .product {
+            width: 40px;
+            height: 40px;
+            position: absolute;
+            animation: fall linear;
+        }
+        
+        @keyframes fall {
+            from { top: -50px; }
+            to { top: 100%; }
+        }
+        
+        .product-sprite {
+            width: 100%;
+            height: 100%;
+            border: 3px solid var(--perekrestok-dark);
+            position: relative;
+        }
+        
+        /* Pixel art products */
+        .tomato {
+            background: #ff6347;
+            border-radius: 50%;
+        }
+        
+        .tomato::after {
+            content: '';
+            width: 12px;
+            height: 8px;
+            background: #228b22;
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .carrot {
+            background: #ff8c00;
+            clip-path: polygon(50% 0%, 70% 20%, 60% 100%, 40% 100%, 30% 20%);
+        }
+        
+        .carrot::after {
+            content: '';
+            width: 16px;
+            height: 12px;
+            background: #228b22;
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .apple {
+            background: #dc143c;
+            border-radius: 45%;
+        }
+        
+        .apple::after {
+            content: '';
+            width: 8px;
+            height: 12px;
+            background: #8b4513;
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .banana {
+            background: #ffd700;
+            border-radius: 50% 50% 40% 40%;
+            transform: rotate(-30deg);
+        }
+        
+        .milk {
+            background: white;
+            border-radius: 3px 3px 0 0;
+        }
+        
+        .milk::after {
+            content: '';
+            width: 60%;
+            height: 40%;
+            background: var(--perekrestok-green);
+            position: absolute;
+            top: 15%;
+            left: 20%;
+        }
+        
+        .bread {
+            background: #daa520;
+            border-radius: 40% 40% 20% 20%;
+        }
+        
+        .bread::before {
+            content: '';
+            width: 80%;
+            height: 3px;
+            background: var(--perekrestok-dark);
+            position: absolute;
+            top: 50%;
+            left: 10%;
+        }
+        
+        .result-screen {
+            text-align: center;
+        }
+        
+        .result-amount {
+            font-size: 32px;
+            color: var(--perekrestok-green);
+            margin: 24px 0;
+            animation: bounce 0.6s ease-out;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .result-message {
+            font-size: 11px;
+            line-height: 1.8;
+            color: var(--perekrestok-dark);
+            margin: 24px 0;
+            padding: 20px;
+            background: white;
+            border: 4px solid var(--perekrestok-dark);
+            box-shadow: 6px 6px 0 var(--pixel-shadow);
+        }
+        
+        .promo-box {
+            background: var(--gold);
+            border: 4px solid var(--perekrestok-dark);
+            padding: 16px;
+            margin: 20px 0;
+            box-shadow: 6px 6px 0 var(--pixel-shadow);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.9; }
+        }
+        
+        .promo-text {
+            font-size: 9px;
+            color: var(--perekrestok-dark);
+            line-height: 1.6;
+        }
+        
+        .icon {
+            display: inline-block;
+            margin: 0 4px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: white;
+            border: 3px solid var(--perekrestok-dark);
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--perekrestok-green);
+            transition: width 0.3s;
+            position: relative;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 5px,
+                rgba(255,255,255,0.3) 5px,
+                rgba(255,255,255,0.3) 10px
+            );
+            animation: progress-stripes 1s linear infinite;
+        }
+        
+        @keyframes progress-stripes {
+            from { transform: translateX(0); }
+            to { transform: translateX(10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Screen 1: Rules -->
+        <div class="screen active" id="rulesScreen">
+            <div class="header">
+                <div class="logo">⚡ Перекрёсток ⚡</div>
+                <h1>Корзинка Доброты</h1>
+            </div>
+            
+            <div class="rules-list">
+                <div class="rule">
+                    <span class="rule-number">1.</span>
+                    Набери свою корзинку доброты — лови продукты!
+                </div>
+                <div class="rule">
+                    <span class="rule-number">2.</span>
+                    Оплати её, Перекрёсток оплатит половину стоимости!
+                </div>
+                <div class="rule">
+                    <span class="rule-number">3.</span>
+                    Получи промокод 15% на три заказа!
+                </div>
+            </div>
+            
+            <button class="btn" onclick="startGame()">
+                Начать игру!
+            </button>
+        </div>
+        
+        <!-- Screen 2: Game -->
+        <div class="screen" id="gameScreen">
+            <div class="game-info">
+                <div class="info-item">
+                    Время: <span class="info-value" id="timer">60</span>
+                </div>
+                <div class="info-item">
+                    Сумма: <span class="info-value" id="money">0₽</span>
+                </div>
+            </div>
+            
+            <div class="game-area" id="gameArea">
+                <div class="basket" id="basket">
+                    <div class="basket-handle"></div>
+                    <div class="basket-body"></div>
+                </div>
+            </div>
+            
+            <div class="info-item" style="text-align: center; font-size: 9px;">
+                Цель: 300₽
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screen 3: Results -->
+        <div class="screen" id="resultScreen">
+            <div class="header">
+                <div class="logo">⚡ Перекрёсток ⚡</div>
+                <h1 id="resultTitle">Победа!</h1>
+            </div>
+            
+            <div class="result-amount" id="resultAmount">0₽</div>
+            
+            <div class="result-message" id="resultMessage">
+                Отличная работа! Ты собрал продуктов на крупную сумму!
+            </div>
+            
+            <div class="promo-box">
+                <div class="promo-text">
+                    <span class="icon">🎁</span>
+                    Половину оплатит Перекрёсток!
+                    <span class="icon">🎁</span>
+                    <br><br>
+                    Плюс промокод 15% на три заказа!
+                </div>
+            </div>
+            
+            <button class="btn" onclick="addToCart()">
+                Добавить в заказ
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const GAME_DURATION = 60; // seconds
+        const MIN_AMOUNT = 300;
+        const SPAWN_INTERVAL = 800; // ms
+        const FALL_SPEED = 3; // seconds
+        
+        const products = [
+            { name: 'tomato', price: 45, class: 'tomato' },
+            { name: 'carrot', price: 35, class: 'carrot' },
+            { name: 'apple', price: 50, class: 'apple' },
+            { name: 'banana', price: 60, class: 'banana' },
+            { name: 'milk', price: 85, class: 'milk' },
+            { name: 'bread', price: 55, class: 'bread' }
+        ];
+        
+        let gameState = {
+            money: 0,
+            timeLeft: GAME_DURATION,
+            basketPosition: 50,
+            isPlaying: false,
+            spawnTimer: null,
+            gameTimer: null
+        };
+        
+        function startGame() {
+            document.getElementById('rulesScreen').classList.remove('active');
+            document.getElementById('gameScreen').classList.add('active');
+            
+            gameState.money = 0;
+            gameState.timeLeft = GAME_DURATION;
+            gameState.basketPosition = 50;
+            gameState.isPlaying = true;
+            
+            updateDisplay();
+            startTimers();
+            setupControls();
+        }
+        
+        function setupControls() {
+            const gameArea = document.getElementById('gameArea');
+            const basket = document.getElementById('basket');
+            
+            // Touch controls
+            gameArea.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = gameArea.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const percentage = (x / rect.width) * 100;
+                gameState.basketPosition = Math.max(10, Math.min(90, percentage));
+                basket.style.left = gameState.basketPosition + '%';
+            });
+            
+            // Mouse controls
+            gameArea.addEventListener('mousemove', (e) => {
+                const rect = gameArea.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percentage = (x / rect.width) * 100;
+                gameState.basketPosition = Math.max(10, Math.min(90, percentage));
+                basket.style.left = gameState.basketPosition + '%';
+            });
+        }
+        
+        function startTimers() {
+            // Spawn products
+            gameState.spawnTimer = setInterval(spawnProduct, SPAWN_INTERVAL);
+            
+            // Game timer
+            gameState.gameTimer = setInterval(() => {
+                gameState.timeLeft--;
+                updateDisplay();
+                
+                if (gameState.timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+        
+        function spawnProduct() {
+            if (!gameState.isPlaying) return;
+            
+            const product = products[Math.floor(Math.random() * products.length)];
+            const gameArea = document.getElementById('gameArea');
+            const productEl = document.createElement('div');
+            
+            productEl.className = 'product';
+            productEl.style.left = Math.random() * 90 + 5 + '%';
+            productEl.style.animationDuration = FALL_SPEED + 's';
+            productEl.innerHTML = `<div class="product-sprite ${product.class}"></div>`;
+            productEl.dataset.price = product.price;
+            
+            gameArea.appendChild(productEl);
+            
+            // Check collision
+            const checkCollision = setInterval(() => {
+                if (!gameState.isPlaying) {
+                    clearInterval(checkCollision);
+                    return;
+                }
+                
+                const productRect = productEl.getBoundingClientRect();
+                const basketEl = document.getElementById('basket');
+                const basketRect = basketEl.getBoundingClientRect();
+                
+                // Check if product is at basket level
+                if (productRect.bottom >= basketRect.top && 
+                    productRect.bottom <= basketRect.bottom + 20) {
+                    
+                    // Check horizontal overlap
+                    if (productRect.left < basketRect.right && 
+                        productRect.right > basketRect.left) {
+                        // Caught!
+                        gameState.money += parseInt(product.price);
+                        updateDisplay();
+                        productEl.remove();
+                        clearInterval(checkCollision);
+                    }
+                }
+                
+                // Remove if out of bounds
+                if (productRect.top > gameArea.clientHeight) {
+                    productEl.remove();
+                    clearInterval(checkCollision);
+                }
+            }, 50);
+        }
+        
+        function updateDisplay() {
+            document.getElementById('timer').textContent = gameState.timeLeft;
+            document.getElementById('money').textContent = gameState.money + '₽';
+            
+            const progress = Math.min(100, (gameState.money / MIN_AMOUNT) * 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function endGame() {
+            gameState.isPlaying = false;
+            clearInterval(gameState.spawnTimer);
+            clearInterval(gameState.gameTimer);
+            
+            // Clear remaining products
+            document.querySelectorAll('.product').forEach(p => p.remove());
+            
+            showResults();
+        }
+        
+        function showResults() {
+            document.getElementById('gameScreen').classList.remove('active');
+            document.getElementById('resultScreen').classList.add('active');
+            
+            const amount = gameState.money;
+            document.getElementById('resultAmount').textContent = amount + '₽';
+            
+            let title = '';
+            let message = '';
+            
+            if (amount >= 500) {
+                title = 'Невероятно!';
+                message = `Ты мастер доброты! Собрал целых ${amount}₽! Перекрёсток оплатит половину — это ${Math.floor(amount/2)}₽! Добавь продукты в корзину и получи ещё промокод 15% на три заказа!`;
+            } else if (amount >= MIN_AMOUNT) {
+                title = 'Отлично!';
+                message = `Супер результат! Ты набрал ${amount}₽ добрых продуктов! Перекрёсток оплатит половину — ${Math.floor(amount/2)}₽! Жми кнопку ниже и получи промокод 15% на три заказа!`;
+            } else {
+                title = 'Хороший старт!';
+                message = `Ты собрал ${amount}₽! Это меньше цели в ${MIN_AMOUNT}₽, но всё равно круто! Перекрёсток поддержит твою доброту — половину оплатим мы! Добавляй в корзину!`;
+            }
+            
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultMessage').textContent = message;
+        }
+        
+        function addToCart() {
+            alert('🎉 Отлично! Содержимое корзинки добавлено в твой заказ!\n\n💚 Перекрёсток оплатит половину стоимости\n🎫 Промокод 15% на три заказа уже у тебя!\n\nСпасибо за участие в акции "Корзинка доброты"!');
+            
+            // Restart game
+            document.getElementById('resultScreen').classList.remove('active');
+            document.getElementById('rulesScreen').classList.add('active');
+        }
+    </script>
+</body>
+</html>
