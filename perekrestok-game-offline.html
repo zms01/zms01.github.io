@@ -5,19 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Корзинка доброты | Перекрёсток</title>
     <style>
-        /* 
-        ============================================
-        ВСТАВЬТЕ СЮДА ВАШ BASE64 ШРИФТ
-        ============================================
-        Замените "YOUR_BASE64_FONT_HERE" на ваш base64 код шрифта
-        */
-        @font-face {
-            font-family: 'PressStart2P';
-            font-style: normal;
-            font-weight: 400;
-            src: url(data:font/woff2;base64,d09GMgABAAAAAHUkABAAAAABx8AAAHTCAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYchhgGYACOCAiBYgmaFhEICoaOdIWzaAE2AiQDlBwLiiQABCAFh2QHpE8MgTFb95ORAdbuth5QQs9tW7TECdWe2YEYNg4MSQDHqkbEsHEww4Z75ZmqqqqqZicVGTPpWNpt4EA4) format('woff2');
-        }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
         /* Fallback на системные моноширинные шрифты */
         :root {
             --perekrestok-green: #00a650;
@@ -37,7 +26,7 @@
         }
         
         body {
-            font-family: 'PressStart2P', 'Courier New', 'Courier', 'Monaco', 'Consolas', monospace;
+            font-family: 'Press Start 2P', cursive;
             background: linear-gradient(135deg, var(--perekrestok-dark) 0%, var(--perekrestok-green) 50%, var(--perekrestok-light) 100%);
             min-height: 100vh;
             display: flex;
